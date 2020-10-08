@@ -7,10 +7,10 @@ import json
 
 do = True
 
-bot = telebot.TeleBot('1361047779:AAFlBogyrz_ENgR3Zk7KrDWEi_fYPoYL58k');
+bot = telebot.TeleBot('tokentokentokentokentokentokentokentokentokentokentoken');
 
 def send_message(message):
-	bot.send_message(1005369393, message)
+	bot.send_message(idididid, message)
 
 def listen_messages(): #слушает сообщения пользователя
 
