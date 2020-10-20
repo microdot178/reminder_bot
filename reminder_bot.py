@@ -4,13 +4,12 @@ import time
 from time import strftime, gmtime
 import json
 
-
 do = True
 
-bot = telebot.TeleBot('1361047779:AAFlBogyrz_ENgR3Zk7KrDWEi_fYPoYL58k');
+bot = telebot.TeleBot('');
 
 def send_message(message):
-	bot.send_message(1005369393, message)
+	bot.send_message(, message)
 
 def listen_messages(): #слушает сообщения пользователя
 
@@ -36,19 +35,25 @@ def listen_messages(): #слушает сообщения пользовател
 			with open('data.json') as f:
 				data = json.load(f)
 			daily = data['daily']
-			showdaily = ''
+			showdailys = ''
 			for i in daily:
-				showdaily += i + ' - ' + daily[i] + '\n'
-			bot.send_message(message.chat.id, showdaily)
+				showdailys += i + ' - ' + daily[i] + '\n'
+			if len(showdailys) == 0:
+				bot.send_message(message.chat.id, 'нет сообщений')
+			else:
+				bot.send_message(message.chat.id, showdailys)
 
 		elif message.text == '/show onces':
 			with open('data.json') as f:
 				data = json.load(f)
 			once = data['once']
-			showonce = ''
+			showonces = ''
 			for i in once:
-				showonce += i + ' - ' + once[i] + '\n'
-			bot.send_message(message.chat.id, showonce)
+				showonces += i + ' - ' + once[i] + '\n'
+			if len(showonces) == 0:
+				bot.send_message(message.chat.id, 'нет сообщений')
+			else:
+				bot.send_message(message.chat.id, showonces)
 
 		elif message.text == '/del daily':
 			bot.register_next_step_handler(message, del_daily);
