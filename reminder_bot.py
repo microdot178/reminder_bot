@@ -6,10 +6,17 @@ import json
 
 do = True
 
+<<<<<<< HEAD
 bot = telebot.TeleBot('');
 
 def send_message(message):
 	bot.send_message(, message)
+=======
+bot = telebot.TeleBot('tokentokentokentokentokentokentokentokentokentokentoken');
+
+def send_message(message):
+	bot.send_message(idididid, message)
+>>>>>>> 1f889181394dfd089a990c36cbb0baf70099c006
 
 def listen_messages(): #слушает сообщения пользователя
 
