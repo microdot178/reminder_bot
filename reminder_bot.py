@@ -11,11 +11,10 @@ bot = telebot.TeleBot('tokentokentokentokentokentoken');
 def send_message(id ,message): 
 	bot.send_message(id, message)
 
-def check_id_in_json(id):
+def check_id_in_json(id): #если id нету, то добавляет его в json
 		
 	with open('data.json') as f:
 		data = json.load(f)
-		
 		check = str(id) in data.keys()
 		if check == False:
 			data[str(id)] = {'once': {}, 'daily': {}}
@@ -169,16 +168,16 @@ def read_data(): #читает data.json
 				daily = id['daily']
 				
 				for i in once:
-					if i == strftime("%H:%M:%S", gmtime()): 			 # если время разового сообщения совпадает с gmtime
-						send_message(user_id, once[i])					 # отправляет сообщение и 
-						del once[i]										 # удаляет его из data.json
+					if i == strftime("%H:%M:%S", gmtime()): # если время разового сообщения совпадает с gmtime
+						send_message(user_id, once[i])		# отправляет сообщение и 
+						del once[i]							# удаляет его из data.json
 						data[str(user_id)] = {'once': once, 'daily': daily}
 						with open('data.json', 'w') as f:
 							f.write(json.dumps(data))
 
 				for i in daily:
-					if i == strftime("%H:%M:%S", gmtime()):				 # тоже самое для ежедневных сообщений
-						send_message(user_id, daily[i])						# только без удаления
+					if i == strftime("%H:%M:%S", gmtime()):	# тоже самое для ежедневных сообщений
+						send_message(user_id, daily[i])		# только без удаления
 						time.sleep(1)
 
 		except:
