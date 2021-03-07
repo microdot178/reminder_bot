@@ -3,24 +3,48 @@ from threading import Thread
 import time
 from time import strftime, gmtime
 import json
+import os
 
 do = True
 
-bot = telebot.TeleBot('tokentokentokentokentokentoken');
+bot = telebot.TeleBot('token');
+
+help = '''/add daily - добавить ежедневное сообщение
+/add once - добавить разовое сообщение
+/show dailys - покаказь ежедневные сообщения
+/show onces - показать разовые сообщения
+/show time - показать время бота
+/del daily - удалить ежедневное сообщение
+/del once - удалить разовое сообщение
+/del all - удалить все сообщения'''
+
+print('starting bot...')
 
 def send_message(id ,message): 
 	bot.send_message(id, message)
 
-def check_id_in_json(id): #если id нету, то добавляет его в json
-		
-	with open('data.json') as f:
-		data = json.load(f)
-		check = str(id) in data.keys()
-		if check == False:
-			data[str(id)] = {'once': {}, 'daily': {}}
-			with open('data.json', 'w') as f:
-				f.write(json.dumps(data))
-				print(id, ' добавлен в базу')
+def check_json(id):
+
+	if not os.path.exists('./data.json'):
+		with open('data.json', 'tw', encoding='utf-8') as f:
+			data = {"None": {"once": {}, "daily": {}}}
+			check = str(id) in data.keys()
+			if check == False:
+				data[str(id)] = {'once': {}, 'daily': {}}
+				with open('data.json', 'w') as f:
+					f.write(json.dumps(data))
+					print('data.json был создан')
+					print(id, ' добавлен в базу')
+
+	else:
+		with open('data.json') as f:
+			data = json.load(f)
+			check = str(id) in data.keys()
+			if check == False:
+				data[str(id)] = {'once': {}, 'daily': {}}
+				with open('data.json', 'w') as f:
+					f.write(json.dumps(data))
+					print(id, ' добавлен в базу')
 
 def listen_messages(): #слушает сообщения пользователя
 
@@ -28,13 +52,10 @@ def listen_messages(): #слушает сообщения пользовател
 
 	def start(message):
 		
-		check_id_in_json(message.chat.id)
+		check_json(message.chat.id)
 
 		if message.text == '/help': #показать список команд
-			bot.send_message(message.chat.id, '''/add daily - добавить ежедневное сообщение\n
-/add once - добавить разовое сообщение\n/show dailys - покаказь ежедневные сообщения\n
-/show onces - показать разовые сообщения\n/del daily - удалить ежедневное сообщение\n
-/del once - удалить разовое сообщение\n/del all - удалить все сообщения''')
+			bot.send_message(message.chat.id, help)
 
 		elif message.text == '/add daily': #добавить ежедневную задачу
 			bot.register_next_step_handler(message, dailymsg);
@@ -69,6 +90,9 @@ def listen_messages(): #слушает сообщения пользовател
 				bot.send_message(message.chat.id, 'нет сообщений')
 			else:
 				bot.send_message(message.chat.id, showonces)
+
+		elif message.text == '/show time': #показать время бота
+			bot.send_message(message.chat.id, strftime("%H:%M:%S", gmtime()))
 
 		elif message.text == '/del daily': #удалить ежедневное сообщение
 			bot.register_next_step_handler(message, del_daily);
@@ -179,6 +203,8 @@ def read_data(): #читает data.json
 					if i == strftime("%H:%M:%S", gmtime()):	# тоже самое для ежедневных сообщений
 						send_message(user_id, daily[i])		# только без удаления
 						time.sleep(1)
+
+				time.sleep(0.2)
 
 		except:
 			None
